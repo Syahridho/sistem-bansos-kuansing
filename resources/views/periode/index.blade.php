@@ -62,7 +62,7 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center gap-4 mt-1 text-xs text-gray-500">
-                                    <span>{{ $p->tanggal->format('d M Y') }}</span>
+                                    <span>{{ $p->tanggal_mulai->format('d M Y') }} – {{ $p->tanggal_akhir->format('d M Y') }}</span>
                                     <span>{{ $p->alternatifs_count }} warga</span>
                                 </div>
                             </a>

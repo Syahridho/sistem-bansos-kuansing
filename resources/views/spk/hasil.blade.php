@@ -25,7 +25,7 @@
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                 </svg>
-                {{ $periode->tanggal->format('d F Y') }}
+                {{ $periode->tanggal_mulai->format('d-m-Y') }} – {{ $periode->tanggal_akhir->format('d-m-Y') }}
             </p>
         </div>
         <svg class="w-5 h-5 text-zinc-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

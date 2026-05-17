@@ -47,8 +47,10 @@
                     </form>
                 </div>
                 
-                <div class="relative h-48 sm:h-64 md:h-72 w-full">
-                    <canvas id="wargaChart"></canvas>
+                <div class="w-full overflow-x-auto pb-2">
+                    <div class="relative h-48 sm:h-64 md:h-72 min-w-[600px]">
+                        <canvas id="wargaChart"></canvas>
+                    </div>
                 </div>
             </div>
 

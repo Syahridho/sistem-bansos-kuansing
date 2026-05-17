@@ -14,7 +14,8 @@ class PeriodeBantuan extends Model
     protected $fillable = [
         'judul',
         'assistance_type_id',
-        'tanggal',
+        'tanggal_mulai',
+        'tanggal_akhir',
         'status',
         'user_id',
     ];
@@ -25,7 +26,8 @@ class PeriodeBantuan extends Model
     }
 
     protected $casts = [
-        'tanggal' => 'date',
+        'tanggal_mulai' => 'date',
+        'tanggal_akhir' => 'date',
     ];
 
     public function assistanceType()

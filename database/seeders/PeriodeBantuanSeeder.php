@@ -24,7 +24,8 @@ class PeriodeBantuanSeeder extends Seeder
             PeriodeBantuan::create([
                 'judul' => 'Periode ' . $type->name . ' 2026',
                 'assistance_type_id' => $type->id,
-                'tanggal' => Carbon::create(2026, rand(1, 6), rand(1, 28))->toDateString(),
+                'tanggal_mulai' => Carbon::create(2026, rand(1, 6), 1)->toDateString(),
+                'tanggal_akhir' => Carbon::create(2026, rand(1, 6), rand(10, 28))->toDateString(),
                 'status' => 'buka',
                 'user_id' => $adminId,
             ]);

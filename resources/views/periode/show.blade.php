@@ -46,7 +46,7 @@
                         <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-100">Terkunci</span>
                     @endif
                 </div>
-                <p class="text-xs sm:text-sm text-gray-500">Tanggal: {{ $periode->tanggal->format('d F Y') }} &middot; {{ $alternatifs->total() }} warga terdaftar</p>
+                <p class="text-xs sm:text-sm text-gray-500">Jadwal: {{ $periode->tanggal_mulai->format('d-m-Y') }} s/d {{ $periode->tanggal_akhir->format('d-m-Y') }} &middot; {{ $alternatifs->total() }} warga terdaftar</p>
             </div>
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <a href="{{ route('spk.hasil', $periode) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-sm font-semibold text-white hover:bg-green-700 transition">

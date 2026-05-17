@@ -26,7 +26,7 @@ class PeriodeBantuanController extends Controller
             $query->where('assistance_type_id', $typeId);
         }
 
-        $periodes = $query->latest('tanggal')->paginate(10)->withQueryString();
+        $periodes = $query->latest('tanggal_mulai')->paginate(10)->withQueryString();
 
         return view('periode.index', compact('periodes', 'assistanceTypes'));
     }
@@ -42,10 +42,13 @@ class PeriodeBantuanController extends Controller
         $request->validate([
             'judul'              => 'required|string|max:255',
             'assistance_type_id' => 'required|exists:assistance_types,id',
-            'tanggal'            => 'required|date',
+            'tanggal_mulai'      => 'required|date',
+            'tanggal_akhir'      => 'required|date|after_or_equal:tanggal_mulai',
+        ], [
+            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus sama dengan atau setelah tanggal mulai.',
         ]);
 
-        $data = $request->only('judul', 'assistance_type_id', 'tanggal');
+        $data = $request->only('judul', 'assistance_type_id', 'tanggal_mulai', 'tanggal_akhir');
         $data['user_id'] = auth()->id();
         $periode = PeriodeBantuan::create($data);
 
@@ -86,10 +89,13 @@ class PeriodeBantuanController extends Controller
         $request->validate([
             'judul'              => 'required|string|max:255',
             'assistance_type_id' => 'required|exists:assistance_types,id',
-            'tanggal'            => 'required|date',
+            'tanggal_mulai'      => 'required|date',
+            'tanggal_akhir'      => 'required|date|after_or_equal:tanggal_mulai',
+        ], [
+            'tanggal_akhir.after_or_equal' => 'Tanggal akhir harus sama dengan atau setelah tanggal mulai.',
         ]);
 
-        $periode->update($request->only('judul', 'assistance_type_id', 'tanggal'));
+        $periode->update($request->only('judul', 'assistance_type_id', 'tanggal_mulai', 'tanggal_akhir'));
 
         return redirect()->route('periode.index')
             ->with('success', 'Periode bantuan berhasil diperbarui.');

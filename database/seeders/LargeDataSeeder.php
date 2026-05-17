@@ -59,7 +59,8 @@ class LargeDataSeeder extends Seeder
             $periodeId = DB::table('periode_bantuans')->insertGetId([
                 'judul' => "Periode " . $i . " - " . Carbon::now()->format('Y'),
                 'assistance_type_id' => $typeId,
-                'tanggal' => Carbon::now()->subMonths(rand(0, 12)),
+                'tanggal_mulai' => Carbon::now()->subMonths(rand(0, 12))->startOfMonth(),
+                'tanggal_akhir' => Carbon::now()->subMonths(rand(0, 12))->endOfMonth(),
                 'status' => rand(0, 1) ? 'buka' : 'tutup',
                 'user_id' => $user->id,
                 'created_at' => now(),

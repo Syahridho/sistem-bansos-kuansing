@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Alternatif;
-use App\Models\PeriodeBantuan;
 
 class CekBantuanController extends Controller
 {
@@ -21,12 +20,14 @@ class CekBantuanController extends Controller
 
         $nik = $request->input('nik');
 
-        // Cari alternatif (warga) dengan NIK tersebut
-        $alternatif = Alternatif::where('nik', $nik)
+        // Semua riwayat pendaftaran NIK (bisa lebih dari satu periode/jenis bantuan)
+        $alternatifs = Alternatif::where('nik', $nik)
             ->with(['periodeBantuan.assistanceType'])
-            ->latest()
-            ->first();
+            ->get()
+            ->filter(fn (Alternatif $alt) => $alt->periodeBantuan !== null)
+            ->sortByDesc(fn (Alternatif $alt) => $alt->periodeBantuan->tanggal_mulai)
+            ->values();
 
-        return view('cek-bantuan', compact('alternatif', 'nik'));
+        return view('cek-bantuan', compact('alternatifs', 'nik'));
     }
 }

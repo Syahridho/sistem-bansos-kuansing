@@ -38,7 +38,8 @@ class PenetapanPenerimaTest extends TestCase
         $periode = PeriodeBantuan::create([
             'judul' => 'BLT 2026 Tahap 1',
             'assistance_type_id' => $type->id,
-            'tanggal' => now(),
+            'tanggal_mulai' => now()->toDateString(),
+            'tanggal_akhir' => now()->addMonth()->toDateString(),
             'user_id' => $admin->id,
             'status' => 'buka',
         ]);
@@ -78,7 +79,8 @@ class PenetapanPenerimaTest extends TestCase
         $periode = PeriodeBantuan::create([
             'judul' => 'BLT 2026 Tahap 1',
             'assistance_type_id' => $type->id,
-            'tanggal' => now(),
+            'tanggal_mulai' => now()->toDateString(),
+            'tanggal_akhir' => now()->addMonth()->toDateString(),
             'user_id' => $admin->id,
             'status' => 'buka',
         ]);
@@ -116,7 +118,8 @@ class PenetapanPenerimaTest extends TestCase
         $periode = PeriodeBantuan::create([
             'judul' => 'BLT 2026 Tahap 1',
             'assistance_type_id' => $type->id,
-            'tanggal' => now(),
+            'tanggal_mulai' => now()->toDateString(),
+            'tanggal_akhir' => now()->addMonth()->toDateString(),
             'user_id' => $admin->id,
             'status' => 'tutup', // CLOSED / LOCKED
         ]);

@@ -4,7 +4,6 @@
         <p class="mt-2 text-sm text-gray-600">Masukkan NIK Anda untuk memeriksa apakah Anda terdaftar sebagai penerima bantuan.</p>
     </div>
 
-    <!-- Cek Bantuan Form -->
     <form method="POST" action="{{ route('cek-bantuan.search') }}">
         @csrf
         <div>
@@ -22,37 +21,25 @@
 
     @if(isset($nik))
         <div class="mt-8 border-t border-gray-200 pt-6">
-            @if($alternatif)
-                @if($alternatif->periodeBantuan->status === 'tutup')
-                    <div class="rounded-xl bg-green-50 border border-green-200 p-5">
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 shrink-0 text-green-600">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-base font-bold text-green-800">Selamat! Anda terdaftar sebagai penerima bantuan.</h3>
-                                <div class="mt-2 text-sm text-green-700 space-y-1">
-                                    <p><strong>NIK:</strong> {{ $alternatif->nik }}</p>
-                                    <p><strong>Nama:</strong> {{ $alternatif->nama }}</p>
-                                    <p><strong>Jenis Bantuan:</strong> {{ $alternatif->periodeBantuan->assistanceType->name }}</p>
-                                    <p><strong>Periode:</strong> {{ $alternatif->periodeBantuan->judul }} ({{ $alternatif->periodeBantuan->tanggal->format('d F Y') }})</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="rounded-xl bg-blue-50 border border-blue-200 p-5">
-                        <div class="flex items-start gap-3">
-                            <div class="mt-0.5 shrink-0 text-blue-600">
-                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
-                            </div>
-                            <div>
-                                <h3 class="text-base font-bold text-blue-800">Sedang Tahap Pendataan</h3>
-                                <p class="mt-1 text-sm text-blue-700">Data NIK <strong>{{ $nik }}</strong> Anda sudah masuk ke dalam sistem, namun saat ini sedang dalam tahap pendataan masyarakat lain dan belum diumumkan secara resmi.</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
+            @if(isset($alternatifs) && $alternatifs->isNotEmpty())
+                <div class="mb-4 rounded-lg bg-gray-50 border border-gray-200 px-4 py-3">
+                    <p class="text-sm text-gray-700">
+                        Ditemukan <strong>{{ $alternatifs->count() }}</strong> riwayat pendaftaran untuk NIK <strong>{{ $nik }}</strong>.
+                        @if($alternatifs->count() > 1)
+                            Anda dapat terdaftar di beberapa periode atau jenis bantuan berbeda.
+                        @endif
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    @foreach($alternatifs as $alternatif)
+                        @include('cek-bantuan.partials.riwayat-card', [
+                            'alternatif' => $alternatif,
+                            'iteration' => $loop->iteration,
+                            'isLatest' => $loop->first,
+                        ])
+                    @endforeach
+                </div>
             @else
                 <div class="rounded-xl bg-red-50 border border-red-200 p-5">
                     <div class="flex items-start gap-3">
@@ -67,7 +54,7 @@
                 </div>
             @endif
         </div>
-        
+
         <div class="mt-6 text-center">
             <a href="{{ route('cek-bantuan.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition">Kembali</a>
         </div>
