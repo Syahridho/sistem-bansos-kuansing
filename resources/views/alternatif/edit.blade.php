@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Edit Warga — {{ $alternatif->nama }}</x-slot>
 
-    <div class="max-w-4xl">
+    <div class="max-w-4xl space-y-6">
         <div class="bg-white border border-gray-200 rounded-xl p-6">
             @if ($errors->any())
                 <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
@@ -123,6 +123,47 @@
                     <button type="submit" class="px-5 py-2.5 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 transition">Perbarui</button>
                 </div>
             </form>
+        </div>
+
+        {{-- Riwayat NIK --}}
+        <div class="bg-white border border-gray-200 rounded-xl p-6">
+            <h3 class="flex items-center gap-2 text-base font-semibold text-gray-900 mb-4">
+                <svg class="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+                Riwayat pendaftaran NIK ini di periode lain:
+            </h3>
+
+            @if($riwayat->isEmpty())
+                <div class="text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                    Tidak ada riwayat di periode lain.
+                </div>
+            @else
+                <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                    <table class="w-full text-sm text-left">
+                        <thead>
+                            <tr class="border-b border-gray-200 bg-gray-50 text-gray-500 font-semibold text-xs uppercase tracking-wider">
+                                <th class="px-4 py-3">Periode</th>
+                                <th class="px-4 py-3">Jenis Bantuan</th>
+                                <th class="px-4 py-3 text-center">Status Periode</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 text-gray-700">
+                            @foreach($riwayat as $alt)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-4 py-3 font-semibold text-gray-900">{{ $alt->periodeBantuan->judul }}</td>
+                                    <td class="px-4 py-3">{{ $alt->periodeBantuan->assistanceType->name }}</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $alt->periodeBantuan->status === 'tutup' ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-green-50 text-green-700 border border-green-100' }}">
+                                            {{ ucfirst($alt->periodeBantuan->status) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

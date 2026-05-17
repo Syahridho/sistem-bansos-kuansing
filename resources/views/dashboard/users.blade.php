@@ -111,7 +111,8 @@
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto">
+            <!-- Desktop: Table -->
+            <div class="hidden md:block overflow-x-auto">
                 <table class="w-full text-sm border-collapse text-left">
                     <thead>
                         <tr class="border-b border-gray-100 bg-gray-50/30">
@@ -204,13 +205,106 @@
                 </table>
             </div>
 
+            {{-- Mobile/Tablet: Card layout --}}
+            <div class="md:hidden divide-y divide-gray-100">
+                @forelse($users as $user)
+                    <div class="p-4 space-y-3 hover:bg-gray-50/30 transition-colors">
+                        {{-- First Row: Name and Role badge --}}
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <h4 class="text-sm font-bold text-gray-900 truncate">{{ $user->name }}</h4>
+                                <p class="text-xs text-gray-400 truncate mt-0.5">{{ $user->email }}</p>
+                            </div>
+                            <div class="shrink-0">
+                                @if($user->role === 'admin')
+                                    <span class="inline-flex items-center rounded-full bg-zinc-900 px-2.5 py-0.5 text-[10px] font-semibold text-zinc-100">
+                                        Admin
+                                    </span>
+                                @elseif($user->role === 'operator')
+                                    <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 text-[10px] font-semibold">
+                                        Operator
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 text-[10px] font-semibold">
+                                        Masyarakat
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Second Row: Status and Join Date --}}
+                        <div class="flex items-center justify-between text-xs text-gray-500 py-1 border-t border-b border-gray-50">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-gray-400">Status:</span>
+                                @if($user->is_active)
+                                    <span class="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-semibold">
+                                        Aktif
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 text-[10px] font-semibold">
+                                        Nonaktif
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="text-gray-400">Bergabung:</span>
+                                <span class="font-medium text-gray-700">{{ $user->created_at->format('d M Y') }}</span>
+                            </div>
+                        </div>
+
+                        {{-- Third Row: Action Buttons --}}
+                        <div class="flex items-center gap-2.5 pt-1">
+                            <!-- Ubah Role Button -->
+                            <button type="button" 
+                                    @click="openRoleModal({{ $user->id }}, '{{ addslashes($user->name) }}', '{{ $user->role }}')"
+                                    class="flex-1 inline-flex items-center justify-center h-8.5 px-3 border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-xs font-semibold shadow-sm transition">
+                                <svg class="w-3.5 h-3.5 mr-1.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                Ubah Role
+                            </button>
+
+                            <!-- Toggle Status Button -->
+                            @if($user->is_active)
+                                <button type="button" 
+                                        @click="openStatusModal({{ $user->id }}, '{{ addslashes($user->name) }}', true)"
+                                        class="flex-1 inline-flex items-center justify-center h-8.5 px-3 border border-rose-200 hover:border-rose-300 text-rose-600 hover:bg-rose-50 rounded-xl text-xs font-semibold shadow-sm transition">
+                                    <svg class="w-3.5 h-3.5 mr-1.5 text-rose-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                                    </svg>
+                                    Nonaktifkan
+                                </button>
+                            @else
+                                <button type="button" 
+                                        @click="openStatusModal({{ $user->id }}, '{{ addslashes($user->name) }}', false)"
+                                        class="flex-1 inline-flex items-center justify-center h-8.5 px-3 border border-emerald-200 hover:border-emerald-300 text-emerald-600 hover:bg-emerald-50 rounded-xl text-xs font-semibold shadow-sm transition">
+                                    <svg class="w-3.5 h-3.5 mr-1.5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Aktifkan
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-12 text-center text-gray-400 text-xs">
+                        <svg class="w-8 h-8 mx-auto text-gray-300 mb-2" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.97 5.97 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94-3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
+                        </svg>
+                        Tidak ada data pengguna ditemukan.
+                    </div>
+                @endforelse
+            </div>
+
             <!-- Pagination Section -->
             @if($users->hasPages())
-                <div class="flex items-center justify-between px-6 py-4.5 border-t border-gray-100 bg-gray-50/50">
-                    <span class="text-xs text-gray-400">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4.5 border-t border-gray-100 bg-gray-50/50">
+                    <span class="text-xs text-gray-400 text-center sm:text-left">
                         Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} pengguna
                     </span>
-                    {{ $users->links() }}
+                    <div class="w-full sm:w-auto flex justify-center">
+                        {{ $users->links() }}
+                    </div>
                 </div>
             @endif
         </div>
@@ -227,7 +321,7 @@
         </form>
 
         <!-- Modal 1: Ubah Role (Shadcn-like style) -->
-        <div style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; background:rgba(9, 9, 11, 0.65); backdrop-filter: blur(4px);"
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/65 backdrop-blur-sm"
              x-show="showRoleModal" 
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0"
@@ -331,7 +425,7 @@
         </div>
 
         <!-- Modal 2: Toggle Status -->
-        <div style="position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; background:rgba(9, 9, 11, 0.65); backdrop-filter: blur(4px);"
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/65 backdrop-blur-sm"
              x-show="showStatusModal" 
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0"

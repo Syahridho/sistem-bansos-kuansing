@@ -14,10 +14,13 @@ use Exception;
 class AlternatifSheetImport implements ToCollection, WithHeadingRow
 {
     protected $periode;
+    protected $nikValidator;
+    public array $duplicateWarnings = [];
 
     public function __construct(PeriodeBantuan $periode)
     {
         $this->periode = $periode;
+        $this->nikValidator = new \App\Services\NikValidationService();
     }
 
     public function collection(Collection $rows)
@@ -51,10 +54,31 @@ class AlternatifSheetImport implements ToCollection, WithHeadingRow
             }
         }
 
+        // Bulk check all NIKs for duplicates in one query
+        $allNiks = $rows->pluck('nik')->filter()->map(fn($n) => (string)$n)->toArray();
+        $duplicateNiks = $this->nikValidator->bulkCheck($allNiks, $this->periode->id);
+
+        // Store duplicate info to attach to import summary
+        $this->duplicateWarnings = [];
+
         foreach ($rows as $row) {
             // Abaikan baris kosong
             if (empty($row['nik']) || empty($row['nama'])) {
                 continue;
+            }
+
+            $nikStr = (string) ($row['nik'] ?? '');
+
+            // Log duplicate warning but DO NOT skip — still import the row
+            if (isset($duplicateNiks[$nikStr])) {
+                $previousPeriodes = collect($duplicateNiks[$nikStr])
+                    ->map(fn($d) => $d['periode_bantuan']['judul'])
+                    ->join(', ');
+                $this->duplicateWarnings[] = [
+                    'nik'      => $nikStr,
+                    'nama'     => $row['nama'] ?? '',
+                    'periodes' => $previousPeriodes,
+                ];
             }
 
             // Simpan Alternatif

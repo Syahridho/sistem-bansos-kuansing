@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
 // Periode Bantuan — Admin & Operator
 Route::middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::resource('periode', PeriodeBantuanController::class)->parameters(['periode' => 'periode']);
+    Route::patch('periode/{periode}/toggle-status', [PeriodeBantuanController::class, 'toggleStatus'])->name('periode.toggle-status');
 
     // Alternatif nested under Periode
     Route::post('periode/{periode}/import', [PeriodeBantuanController::class, 'import'])->name('periode.import');
@@ -103,7 +104,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Kriteria & Assistance Type — Admin only
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::patch('periode/{periode}/toggle-status', [PeriodeBantuanController::class, 'toggleStatus'])->name('periode.toggle-status');
     Route::resource('assistance-types', AssistanceTypeController::class)->names('assistance_types')->except(['show']);
     Route::resource('kriteria', KriteriaController::class)->parameters(['kriteria' => 'kriteria']);
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');

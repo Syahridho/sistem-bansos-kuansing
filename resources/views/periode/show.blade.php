@@ -7,6 +7,18 @@
             <span>{{ session('success') }}</span>
         </div>
     @endif
+
+    @if(session('import_duplicate_warning'))
+        <div class="mb-4 sm:mb-6 rounded-lg bg-amber-50 border border-amber-200 p-3 sm:p-4 text-sm text-amber-800 flex items-start gap-3">
+            <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <div>
+                <p class="font-semibold mb-0.5">Peringatan Duplikat NIK</p>
+                <p class="text-xs text-amber-700 leading-relaxed">{{ session('import_duplicate_warning') }}</p>
+            </div>
+        </div>
+    @endif
     @if(session('error'))
         <div class="mb-4 sm:mb-6 rounded-lg bg-red-50 border border-red-200 p-3 sm:p-4 text-sm text-red-700 flex items-center gap-3">
             <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -30,6 +42,9 @@
                 <div class="flex flex-wrap items-center gap-2 mb-1">
                     <h2 class="text-base sm:text-lg font-bold text-gray-900">{{ $periode->judul }}</h2>
                     <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">{{ $periode->assistanceType->name }}</span>
+                    @if($periode->status === 'tutup')
+                        <span class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-900 text-zinc-100">Terkunci</span>
+                    @endif
                 </div>
                 <p class="text-xs sm:text-sm text-gray-500">Tanggal: {{ $periode->tanggal->format('d F Y') }} &middot; {{ $alternatifs->total() }} warga terdaftar</p>
             </div>
@@ -38,13 +53,29 @@
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
                     Hitung Perangkingan
                 </a>
-                <a href="{{ route('alternatif.create', $periode) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 transition">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                    Tambah Warga
-                </a>
+                @if($periode->status === 'buka')
+                    <a href="{{ route('alternatif.create', $periode) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 transition">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                        Tambah Warga
+                    </a>
+                @endif
             </div>
         </div>
     </div>
+
+    @if($periode->status === 'tutup')
+        <div class="mb-4 sm:mb-6 rounded-xl bg-zinc-50 border border-zinc-200 p-4 sm:p-5 text-sm text-zinc-700 flex items-start gap-3 shadow-sm">
+            <div class="p-2 bg-zinc-900 text-white rounded-lg shrink-0">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-zinc-900">Periode Bantuan Ini Telah Ditutup</h4>
+                <p class="text-xs text-zinc-500 mt-0.5">Hasil perhitungan penerima bantuan telah ditetapkan secara resmi dan dikunci. Modifikasi data warga (tambah, edit, hapus, import) dinonaktifkan.</p>
+            </div>
+        </div>
+    @endif
 
     {{-- Data Warga Table --}}
     <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
@@ -56,7 +87,9 @@
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari NIK / Nama..." class="w-full sm:w-64 pl-9 pr-4 py-2 rounded-lg border border-gray-300 text-sm focus:border-blue-500 focus:ring-blue-500">
                 </form>
 
-                <x-modal-import-excel :periodeId="$periode->id" />
+                @if($periode->status === 'buka')
+                    <x-modal-import-excel :periodeId="$periode->id" />
+                @endif
             </div>
         </div>
 
@@ -81,7 +114,9 @@
                             @foreach($kriterias as $k)
                                 <th class="text-center px-4 py-3 font-medium text-gray-500">{{ $k->kode }}</th>
                             @endforeach
-                            <th class="text-right px-6 py-3 font-medium text-gray-500">Aksi</th>
+                            @if($periode->status === 'buka')
+                                <th class="text-right px-6 py-3 font-medium text-gray-500">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -118,15 +153,17 @@
                                         @endif
                                     </td>
                                 @endforeach
-                                <td class="px-6 py-3 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('alternatif.edit', [$periode, $alt]) }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
-                                        <form action="{{ route('alternatif.destroy', [$periode, $alt]) }}" method="POST" onsubmit="return confirm('Hapus data ini?')">
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
-                                        </form>
-                                    </div>
-                                </td>
+                                @if($periode->status === 'buka')
+                                    <td class="px-6 py-3 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <a href="{{ route('alternatif.edit', [$periode, $alt]) }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
+                                            <form action="{{ route('alternatif.destroy', [$periode, $alt]) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Data Warga', 'Apakah Anda yakin ingin menghapus data warga {{ $alt->nama }} dari periode ini?', 'Tindakan ini akan menghapus seluruh data alternatif warga dan hasil penilaian di dalamnya secara permanen.')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
@@ -143,13 +180,15 @@
                                 <h4 class="text-sm font-semibold text-gray-900 truncate">{{ $alt->nama }}</h4>
                                 <p class="text-xs text-gray-500 font-mono mt-0.5">{{ $alt->nik }}</p>
                             </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <a href="{{ route('alternatif.edit', [$periode, $alt]) }}" class="px-2.5 py-1 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
-                                <form action="{{ route('alternatif.destroy', [$periode, $alt]) }}" method="POST" onsubmit="return confirm('Hapus data ini?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
-                                </form>
-                            </div>
+                            @if($periode->status === 'buka')
+                                <div class="flex items-center gap-1.5 shrink-0">
+                                    <a href="{{ route('alternatif.edit', [$periode, $alt]) }}" class="px-2.5 py-1 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
+                                    <form action="{{ route('alternatif.destroy', [$periode, $alt]) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Data Warga', 'Apakah Anda yakin ingin menghapus data warga {{ $alt->nama }} dari periode ini?', 'Tindakan ini akan menghapus seluruh data alternatif warga dan hasil penilaian di dalamnya secara permanen.')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                         @if($alt->alamat)
                             <p class="text-xs text-gray-500 mb-2">{{ $alt->alamat }}</p>

@@ -69,17 +69,27 @@
 
                             {{-- Actions --}}
                             <div class="flex flex-wrap items-center gap-2">
-                                @if(auth()->user()->role === 'admin')
-                                    <form action="{{ route('periode.toggle-status', $p) }}" method="POST">
+                                @if($p->status === 'buka')
+                                    <form action="{{ route('periode.toggle-status', $p) }}" method="POST"
+                                          @submit.prevent="triggerConfirm($event.target, 'Tutup Periode Bantuan', 'Apakah Anda yakin ingin menutup periode bantuan ini?', 'Tindakan ini akan mengunci seluruh data alternatif dan hasil perhitungan penerima bantuan untuk periode ini secara resmi.', 'Ya, Tutup Periode')">
                                         @csrf @method('PATCH')
-                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium {{ $p->status === 'tutup' ? 'text-green-600 border border-green-200 hover:bg-green-50' : 'text-orange-600 border border-orange-200 hover:bg-orange-50' }} transition">
-                                            {{ $p->status === 'tutup' ? 'Buka' : 'Tutup' }}
+                                        <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-orange-600 border border-orange-200 hover:bg-orange-50 transition">
+                                            Tutup
                                         </button>
                                     </form>
+                                @else
+                                    @if(auth()->user()->role === 'admin')
+                                        <form action="{{ route('periode.toggle-status', $p) }}" method="POST">
+                                            @csrf @method('PATCH')
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-green-600 border border-green-200 hover:bg-green-50 transition">
+                                                Buka
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endif
                                 <a href="{{ route('periode.show', $p) }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-blue-600 border border-blue-200 hover:bg-blue-50 transition">Lihat</a>
                                 <a href="{{ route('periode.edit', $p) }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
-                                <form action="{{ route('periode.destroy', $p) }}" method="POST" onsubmit="return confirm('Hapus periode ini beserta semua datanya?')">
+                                <form action="{{ route('periode.destroy', $p) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Periode', 'Apakah Anda yakin ingin menghapus periode bantuan {{ $p->judul }}?', 'Menghapus periode ini akan menghapus seluruh data alternatif warga dan hasil penilaian di dalamnya secara permanen.')">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
                                 </form>

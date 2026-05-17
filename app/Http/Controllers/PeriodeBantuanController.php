@@ -105,6 +105,10 @@ class PeriodeBantuanController extends Controller
 
     public function toggleStatus(PeriodeBantuan $periode)
     {
+        if (auth()->user()->role === 'operator' && $periode->status === 'tutup') {
+            abort(403, 'Operator tidak memiliki akses untuk membuka kembali periode bantuan.');
+        }
+
         $periode->update([
             'status' => $periode->status === 'buka' ? 'tutup' : 'buka'
         ]);
@@ -115,12 +119,31 @@ class PeriodeBantuanController extends Controller
 
     public function import(Request $request, PeriodeBantuan $periode)
     {
+        if ($periode->status === 'tutup') {
+            return redirect()->route('periode.show', $periode)->with('error', 'Periode bantuan ini telah ditutup.');
+        }
+
         $request->validate([
             'excel' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
         try {
-            Excel::import(new AlternatifImport($periode), $request->file('excel'));
+            $importer = new AlternatifImport($periode);
+            Excel::import($importer, $request->file('excel'));
+
+            $warnings = $importer->duplicateWarnings;
+
+            if (!empty($warnings)) {
+                $count = count($warnings);
+                $names = collect($warnings)->take(3)->map(fn($w) => $w['nama'])->join(', ');
+                $more  = $count > 3 ? " dan " . ($count - 3) . " lainnya" : "";
+
+                return redirect()->back()
+                    ->with('success', "Data alternatif berhasil diimport!")
+                    ->with('import_duplicate_warning', 
+                        "{$count} warga ({$names}{$more}) memiliki NIK yang pernah terdaftar di periode lain. Data tetap diimport.");
+            }
+
             return redirect()->back()->with('success', 'Data alternatif berhasil diimport!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());

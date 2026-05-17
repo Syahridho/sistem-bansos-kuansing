@@ -44,7 +44,7 @@
                                 <td class="px-4 py-2.5 text-right text-sm">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('assistance_types.edit', $type) }}" class="px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
-                                        <form action="{{ route('assistance_types.destroy', $type) }}" method="POST" onsubmit="return confirm('Hapus jenis bantuan ini?')">
+                                        <form action="{{ route('assistance_types.destroy', $type) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Jenis Bantuan', 'Apakah Anda yakin ingin menghapus jenis bantuan {{ $type->name }}?', 'Menghapus jenis bantuan ini akan menghapus seluruh periode bantuan dan kriteria yang terikat dengannya secara permanen.')">
                                             @csrf @method('DELETE')
                                             <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
                                         </form>
@@ -64,7 +64,7 @@
                             <h4 class="text-sm font-semibold text-gray-900">{{ $type->name }}</h4>
                             <div class="flex items-center gap-1.5 shrink-0">
                                 <a href="{{ route('assistance_types.edit', $type) }}" class="px-2.5 py-1 rounded-lg text-xs font-medium text-gray-600 border border-gray-300 hover:bg-gray-50 transition">Edit</a>
-                                <form action="{{ route('assistance_types.destroy', $type) }}" method="POST" onsubmit="return confirm('Hapus jenis bantuan ini?')">
+                                <form action="{{ route('assistance_types.destroy', $type) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Jenis Bantuan', 'Apakah Anda yakin ingin menghapus jenis bantuan {{ $type->name }}?', 'Menghapus jenis bantuan ini akan menghapus seluruh periode bantuan dan kriteria yang terikat dengannya secara permanen.')">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="px-2.5 py-1 rounded-lg text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 transition">Hapus</button>
                                 </form>

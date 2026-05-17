@@ -8,9 +8,28 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <style>body { font-family: 'Inter', sans-serif; }</style>
+        <style>
+            body { font-family: 'Inter', sans-serif; }
+            [x-cloak] { display: none !important; }
+        </style>
     </head>
-    <body class="font-sans antialiased" x-data="{ sidebarOpen: false }">
+    <body class="font-sans antialiased" x-data="{ 
+        sidebarOpen: false, 
+        confirmOpen: false, 
+        confirmTitle: '', 
+        confirmMessage: '', 
+        confirmCaution: '', 
+        confirmSubmitForm: null,
+        confirmSubmitText: '',
+        triggerConfirm(form, title, message, caution = 'Tindakan ini tidak dapat dibatalkan dan semua data yang terkait akan terhapus secara permanen.', submitText = 'Ya, Hapus') {
+            this.confirmSubmitForm = form;
+            this.confirmTitle = title;
+            this.confirmMessage = message;
+            this.confirmCaution = caution;
+            this.confirmSubmitText = submitText;
+            this.confirmOpen = true;
+        }
+    }">
         <div class="min-h-screen bg-gray-50 flex">
 
             {{-- ===== SIDEBAR (Desktop) ===== --}}
@@ -168,6 +187,69 @@
                 <main class="flex-1 p-4 sm:p-6">
                     {{ $slot }}
                 </main>
+            </div>
+        </div>
+
+        {{-- ===== GLOBAL CONFIRMATION MODAL ===== --}}
+        <div x-show="confirmOpen" 
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" 
+             x-cloak 
+             style="display: none;">
+            {{-- Backdrop --}}
+            <div x-show="confirmOpen" 
+                 x-transition:enter="transition ease-out duration-300" 
+                 x-transition:enter-start="opacity-0" 
+                 x-transition:enter-end="opacity-100" 
+                 x-transition:leave="transition ease-in duration-200" 
+                 x-transition:leave-start="opacity-100" 
+                 x-transition:leave-end="opacity-0" 
+                 class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" 
+                 @click="confirmOpen = false"></div>
+
+            {{-- Modal Content --}}
+            <div x-show="confirmOpen" 
+                 x-transition:enter="transition ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="transition ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="relative bg-white rounded-2xl shadow-xl border border-gray-200 max-w-lg w-full p-6 sm:p-8 overflow-hidden z-10">
+                
+                {{-- Header --}}
+                <div class="mb-4">
+                    <h3 class="text-lg font-bold text-gray-900" x-text="confirmTitle"></h3>
+                </div>
+
+                {{-- Body Message --}}
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600" x-text="confirmMessage"></p>
+                </div>
+
+                {{-- Caution Alert Box --}}
+                <div x-show="confirmCaution" class="mb-6 rounded-xl bg-red-50 border border-red-100 p-4 text-sm text-red-700 flex items-start gap-3">
+                    <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div>
+                        <p class="font-semibold mb-0.5">Perhatian</p>
+                        <p class="text-xs text-red-600/90 leading-relaxed" x-text="confirmCaution"></p>
+                    </div>
+                </div>
+
+                {{-- Footer Buttons --}}
+                <div class="flex items-center justify-end gap-3">
+                    <button type="button" 
+                            @click="confirmOpen = false" 
+                            class="px-4 py-2.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:text-gray-900 transition">
+                        Batal
+                    </button>
+                    <button type="button" 
+                            @click="confirmSubmitForm.submit(); confirmOpen = false" 
+                            class="px-5 py-2.5 rounded-xl bg-red-600 text-sm font-semibold text-white hover:bg-red-700 transition"
+                            x-text="confirmSubmitText">
+                    </button>
+                </div>
             </div>
         </div>
     </body>

@@ -155,13 +155,13 @@
                                            class="inline-flex items-center h-7 px-2.5 rounded border border-slate-200 bg-white text-[11px] font-medium text-slate-600 hover:bg-slate-50 transition-colors">
                                             Edit
                                         </a>
-                                        <form action="{{ route('kriteria.destroy', $kriteria) }}" method="POST" onsubmit="return confirm('Hapus kriteria ini?')">
-                                            @csrf @method('DELETE')
-                                            <button type="submit"
-                                                class="inline-flex items-center h-7 px-2.5 rounded border border-rose-200 bg-white text-[11px] font-medium text-rose-600 hover:bg-rose-50 transition-colors">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                         <form action="{{ route('kriteria.destroy', $kriteria) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Kriteria', 'Apakah Anda yakin ingin menghapus kriteria {{ $kriteria->nama }}?', 'Menghapus kriteria ini akan menghapus seluruh data penilaian warga yang terkait dengan kriteria ini secara permanen.')">
+                                             @csrf @method('DELETE')
+                                             <button type="submit"
+                                                 class="inline-flex items-center h-7 px-2.5 rounded border border-rose-200 bg-white text-[11px] font-medium text-rose-600 hover:bg-rose-50 transition-colors">
+                                                 Hapus
+                                             </button>
+                                         </form>
                                     </div>
                                 </td>
                             </tr>
@@ -196,13 +196,13 @@
                                class="flex-1 inline-flex items-center justify-center h-8 rounded border border-slate-200 bg-white text-xs font-medium text-slate-600 hover:bg-slate-50 transition-colors">
                                 Edit
                             </a>
-                            <form action="{{ route('kriteria.destroy', $kriteria) }}" method="POST" onsubmit="return confirm('Hapus?')" class="flex-1">
-                                @csrf @method('DELETE')
-                                <button type="submit"
-                                    class="w-full inline-flex items-center justify-center h-8 rounded border border-rose-200 bg-white text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors">
-                                    Hapus
-                                </button>
-                            </form>
+                             <form action="{{ route('kriteria.destroy', $kriteria) }}" method="POST" @submit.prevent="triggerConfirm($event.target, 'Hapus Kriteria', 'Apakah Anda yakin ingin menghapus kriteria {{ $kriteria->nama }}?', 'Menghapus kriteria ini akan menghapus seluruh data penilaian warga yang terkait dengan kriteria ini secara permanen.')" class="flex-1">
+                                 @csrf @method('DELETE')
+                                 <button type="submit"
+                                     class="w-full inline-flex items-center justify-center h-8 rounded border border-rose-200 bg-white text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors">
+                                     Hapus
+                                 </button>
+                             </form>
                         </div>
                     </div>
                 @endforeach
