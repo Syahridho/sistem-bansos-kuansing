@@ -7,9 +7,17 @@ use Illuminate\Http\Request;
 
 class AssistanceTypeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $assistanceTypes = AssistanceType::paginate(10);
+        $query = AssistanceType::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
+        }
+
+        $assistanceTypes = $query->paginate(10)->withQueryString();
+
         return view('assistance_types.index', compact('assistanceTypes'));
     }
 

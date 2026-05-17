@@ -18,11 +18,12 @@
                 <div class="space-y-5">
                     <div class="mb-5">
                         <label for="assistance_type_id" class="block text-sm font-medium text-gray-700 mb-1">Jenis Bantuan <span class="text-red-500">*</span></label>
-                        <select id="assistance_type_id" name="assistance_type_id" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500" disabled    >
+                        <select id="assistance_type_id" required class="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 cursor-not-allowed" disabled>
                             @foreach($assistanceTypes as $type)
                                 <option value="{{ $type->id }}" {{ old('assistance_type_id', $kriteria->assistance_type_id) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="assistance_type_id" value="{{ old('assistance_type_id', $kriteria->assistance_type_id) }}">
                     </div>
 
                     <div class="grid grid-cols-2 gap-5">
@@ -100,6 +101,28 @@
                         </div>
                         <button type="button" @click="checkItems.push('')"
                                 class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium">+ Tambah item</button>
+                    </div>
+
+                    {{-- Hint Angka --}}
+                    <div x-show="tipe === 'angka'" x-cloak>
+                        <div class="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                            <div>
+                                <p class="text-sm font-medium text-blue-800">Tidak perlu konfigurasi tambahan</p>
+                                <p class="text-xs text-blue-600 mt-0.5">Warga akan mengisi angka bilangan bulat saat pendaftaran. Contoh: jumlah tanggungan, usia, jumlah anak, dll.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Hint Rupiah --}}
+                    <div x-show="tipe === 'rupiah'" x-cloak>
+                        <div class="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                            <svg class="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                            <div>
+                                <p class="text-sm font-medium text-blue-800">Tidak perlu konfigurasi tambahan</p>
+                                <p class="text-xs text-blue-600 mt-0.5">Warga akan mengisi nominal dalam Rupiah saat pendaftaran. Input otomatis diformat dengan pemisah ribuan. Contoh: penghasilan, pengeluaran, dll.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
