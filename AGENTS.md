@@ -28,23 +28,32 @@ php artisan test
 What this repo is
 
 - Framework: Laravel (PHP)
-- MVC structure: controllers in [app/Http/Controllers](app/Http/Controllers), models in [app/Models](app/Models), views in [resources/views](resources/views)
-- Key models: `User`, `Alternatif`, `Kriteria`, `Penilaian`, `PeriodeBantuan`
+- Domain: social assistance decision support with beneficiary ranking and period management
+- Core data model: `PeriodeBantuan` with nested `Alternatif`, `Kriteria`, `Penilaian`, and `AssistanceType`
 
 Where agents should look first
 
-- Project overview: [README.md](README.md)
-- Models and business logic: [app/Models](app/Models)
-- Routes: [routes/web.php](routes/web.php)
-- DB schema: [database/migrations](database/migrations)
-- Seeders: [database/seeders/DatabaseSeeder.php](database/seeders/DatabaseSeeder.php)
+- `routes/web.php` for route and middleware structure
+- `app/Http/Controllers/PeriodeBantuanController.php` for period lifecycle, import, and status toggling
+- `app/Http/Controllers/AlternatifController.php` for alternative CRUD inside a period
+- `app/Http/Controllers/SpkController.php` for ranking and export behavior
+- `app/Models/PeriodeBantuan.php`, `Alternatif.php`, `Kriteria.php`, `Penilaian.php`, `AssistanceType.php`
+- `app/Imports/AlternatifImport.php` and `app/Imports/AlternatifSheetImport.php` for Excel header/row mapping and duplicate NIK handling
+- `app/Services/NikValidationService.php` for cross-period duplicate checks
+- `app/Services/CalendarEventService.php` for calendar event generation
+- `resources/views` for Blade templates, layout, and UI patterns
+- `database/migrations` and `database/seeders/DatabaseSeeder.php` for schema and sample data
 
 Conventions & notes
 
-- Follow Laravel conventions (Eloquent models, resource controllers, migrations).
-- Database: ensure `.env` DB settings are correct before running `migrate`/`seed`.
-- Frontend assets use Vite. Use `npm run dev` during development.
-- Prefer linking to existing docs (README) rather than copying them.
+- Follow Laravel conventions (Eloquent, resource controllers, migrations).
+- This app uses role middleware: `auth`, `role:admin,operator`, and `role:admin`.
+- `PeriodeBantuan` status is `buka` / `tutup`; operator role may not reopen a closed period.
+- Excel import validates headers, saves alternatives + ratings, and records duplicate NIK warnings without blocking import.
+- Ranking/export respects `AssistanceType::maksimal_penerima` and produces result files via `app/Exports/PerangkinganExport.php`.
+- Use `php artisan migrate --seed` after `.env` setup.
+- Frontend assets are built with Vite. Use `npm run dev` for development.
+- Prefer understanding the custom domain from code first; this repo’s `README.md` is generic Laravel boilerplate.
 
 If you update this file
 
@@ -53,4 +62,5 @@ If you update this file
 
 Next suggestions
 
-- Create specialized instructions or skills for testing and deployment workflows if needed.
+- Create a focused skill for Excel import validation and duplicate-NIK handling.
+- Create a focused skill for SPK ranking and export validation.

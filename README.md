@@ -7,60 +7,62 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Tentang Sistem Bansos Kuansing
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sistem Bansos Kuansing adalah aplikasi web untuk mendukung pengelolaan bantuan sosial di Kabupaten Kuantan Singingi. Aplikasi ini memudahkan admin dan operator dalam membuat periode bantuan, menentukan jenis bantuan, mengelola kriteria penilaian, memasukkan data warga, serta melakukan perhitungan peringkat penerima dengan metode Weighted Product (WP). Sistem juga memeriksa duplikat NIK antar periode dan menampilkan peringatan tanpa menghentikan proses impor.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Manajemen periode bantuan dengan status `buka` / `tutup`
+- Pengelolaan alternatif warga (`Alternatif`) dan penilaian kriteria (`Penilaian`)
+- Definisi jenis bantuan (`AssistanceType`) dan kriteria penilaian (`Kriteria`)
+- Impor data warga dan penilaian dari Excel dengan validasi header
+- Peringatan duplikat NIK antar periode tetapi data tetap diimpor
+- Perhitungan perangkingan WP dan ekspor hasil rekomendasi penerima
+- Pencarian publik untuk mengecek bantuan berdasarkan NIK
+- Otentikasi dan otorisasi user dengan peran `admin` dan `operator`
 
-## Learning Laravel
+## Teknologi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel (PHP)
+- Blade untuk templating frontend
+- Vite untuk asset bundling
+- Maatwebsite Excel untuk impor/ekspor data
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Cara Menjalankan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Jalankan perintah berikut dari root proyek:
 
-## Laravel Sponsors
+```bash
+composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run dev
+php artisan migrate --seed
+php artisan storage:link
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Struktur Penting
 
-### Premium Partners
+- `routes/web.php` - definisi rute dan middleware
+- `app/Http/Controllers/PeriodeBantuanController.php` - lifecycle periode, impor Excel, toggle status
+- `app/Http/Controllers/SpkController.php` - perhitungan WP dan ekspor hasil
+- `app/Imports/AlternatifImport.php` dan `app/Imports/AlternatifSheetImport.php` - logika impor Excel
+- `app/Exports/PerangkinganExport.php` - ekspor hasil perangkingan
+- `app/Services/NikValidationService.php` - validasi NIK lintas periode
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Pengujian
 
-## Contributing
+Jalankan:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+vendor/bin/phpunit
+# atau
+php artisan test
+```
 
-## Code of Conduct
+## Lisensi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Aplikasi ini menggunakan lisensi MIT.
