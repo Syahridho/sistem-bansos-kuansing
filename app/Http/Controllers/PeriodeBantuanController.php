@@ -8,8 +8,10 @@ use App\Models\AssistanceType;
 use Illuminate\Http\Request;
 
 use App\Imports\AlternatifImport;
+use App\Exports\AlternatifTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Exception;
+use Throwable;
 
 class PeriodeBantuanController extends Controller
 {
@@ -151,8 +153,15 @@ class PeriodeBantuanController extends Controller
             }
 
             return redirect()->back()->with('success', 'Data alternatif berhasil diimport!');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return redirect()->back()->with('error', 'Gagal mengimport data: ' . $e->getMessage());
         }
+    }
+
+    public function downloadTemplate(PeriodeBantuan $periode)
+    {
+        $safeJudul = strtolower(preg_replace('/[^a-zA-Z0-9]/', '_', $periode->judul));
+        $filename = 'template_import_warga_' . $safeJudul . '.xlsx';
+        return Excel::download(new AlternatifTemplateExport($periode), $filename);
     }
 }

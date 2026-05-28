@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:admin,operator'])->group(function () {
 
     // Alternatif nested under Periode
     Route::post('periode/{periode}/import', [PeriodeBantuanController::class, 'import'])->name('periode.import');
+    Route::get('periode/{periode}/template', [PeriodeBantuanController::class, 'downloadTemplate'])->name('alternatif.template');
     Route::get('periode/{periode}/alternatif/create', [AlternatifController::class, 'create'])->name('alternatif.create');
     Route::post('periode/{periode}/alternatif', [AlternatifController::class, 'store'])->name('alternatif.store');
     Route::get('periode/{periode}/alternatif/{alternatif}/edit', [AlternatifController::class, 'edit'])->name('alternatif.edit');

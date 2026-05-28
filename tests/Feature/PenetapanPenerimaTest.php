@@ -176,4 +176,44 @@ class PenetapanPenerimaTest extends TestCase
         $responseImport->assertRedirect(route('periode.show', $periode));
         $responseImport->assertSessionHas('error', 'Periode bantuan ini telah ditutup.');
     }
+
+    public function test_can_download_alternatif_import_template()
+    {
+        $admin = User::create([
+            'name' => 'Admin Utama',
+            'email' => 'admin@spkbansos.id',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
+
+        $type = AssistanceType::create([
+            'name' => 'Bantuan Langsung Tunai',
+            'maksimal_penerima' => 10,
+            'jumlah_diterima' => 300000,
+        ]);
+
+        $kriteria = \App\Models\Kriteria::create([
+            'kode' => 'K1',
+            'nama' => 'Penghasilan',
+            'bobot' => 5,
+            'jenis' => 'cost',
+            'tipe_input' => 'rupiah',
+            'assistance_type_id' => $type->id,
+        ]);
+
+        $periode = PeriodeBantuan::create([
+            'judul' => 'BLT 2026 Tahap 1',
+            'assistance_type_id' => $type->id,
+            'tanggal_mulai' => now()->toDateString(),
+            'tanggal_akhir' => now()->addMonth()->toDateString(),
+            'user_id' => $admin->id,
+            'status' => 'buka',
+        ]);
+
+        $response = $this->actingAs($admin)
+            ->get(route('alternatif.template', $periode));
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-disposition', 'attachment; filename=template_import_warga_blt_2026_tahap_1.xlsx');
+    }
 }
