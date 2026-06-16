@@ -21,7 +21,7 @@ use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
 
 // Cek Bantuan (Public)
 Route::get('/cek-bantuan', [CekBantuanController::class, 'index'])->name('cek-bantuan.index');

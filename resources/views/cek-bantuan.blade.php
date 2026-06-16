@@ -56,7 +56,10 @@
         </div>
 
         <div class="mt-6 text-center">
-            <a href="{{ route('cek-bantuan.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition">Kembali</a>
+            <a href="{{ route('home') }}"
+            class="block text-sm font-medium text-white w-full bg-blue-600 hover:bg-blue-800 transition py-2 px-4 rounded">
+                Kembali
+            </a>
         </div>
     @endif
 </x-guest-layout>

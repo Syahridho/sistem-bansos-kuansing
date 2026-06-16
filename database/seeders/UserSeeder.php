@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // --- Fixed accounts ---
         User::create([
             'name'     => 'Admin Utama',
             'email'    => 'admin@spkbansos.id',
@@ -33,5 +34,22 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role'     => 'masyarakat',
         ]);
+
+        // --- 97 random users to reach 100 total ---
+        $roles = ['admin', 'operator', 'masyarakat'];
+        $roleWeights = array_merge(
+            array_fill(0, 5,  'admin'),      //  5 admin
+            array_fill(0, 12, 'operator'),   // 12 operator
+            array_fill(0, 80, 'masyarakat')  // 80 masyarakat
+        );
+
+        for ($i = 1; $i <= 97; $i++) {
+            User::create([
+                'name'     => fake('id_ID')->name(),
+                'email'    => fake()->unique()->safeEmail(),
+                'password' => Hash::make('password'),
+                'role'     => fake()->randomElement($roleWeights),
+            ]);
+        }
     }
 }
